@@ -8,6 +8,7 @@ Created on Sun Oct 31 07:03:27 2021
 @author: 16-Bit
 """
 HISTORY_FILE = "history.json"
+countIterations = 0
 
 def main():
     #arguement parameter parsing to get game info
@@ -18,16 +19,15 @@ def main():
     args = parser.parse_args()
     #save arguement values
     isNewGame = args.init
-    countIterations = args.iterations
+    numIterations = args.iterations
     moveOpPrevious = args.last_opponent_move
 
     if isNewGame:
         #generate new json file
-        opponent_history = {
-                "history": ""
-                }
         with open(HISTORY_FILE, "w") as write_file:
-            json.dump(opponent_history, write_file)
+            json.dump({
+                    "history": ""
+                    }, write_file)
 
     #silent first x3, see how they go
     if countIterations < 3:
