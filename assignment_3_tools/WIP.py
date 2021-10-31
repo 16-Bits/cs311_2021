@@ -9,6 +9,12 @@ Created on Sun Oct 31 07:03:27 2021
 """
 HISTORY_FILE = "history.json"
 countIterations = 0
+historyTest = {
+    "opponent": {
+        "personality": "",
+        "history": ""
+        }
+    }
 
 def main():
     #arguement parameter parsing to get game info
@@ -25,20 +31,18 @@ def main():
     if isNewGame:
         #generate new json file
         with open(HISTORY_FILE, "w") as write_file:
-            json.dump({
-                    "history": ""
-                    }, write_file)
+            json.dump(historyTest, write_file)
 
     #silent first x3, see how they go
     if countIterations < 3:
-        print("silent")
-    #3 silent sucker
+        print("silent"+numIterations)
+    #3silent sucker
             #wait for 1 strikes
-    #2 silent sneaky
+    #2silent sneaky
             #wait for 3 strikes
-    #1 silent tricky
+    #1silent tricky
             #tit for tat
-    #0 silent beligerant
+    #0silent beligerant
             #do not forgive
     #for each snitch, add to linked list
 
