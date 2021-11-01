@@ -10,7 +10,7 @@ import json
 
 HISTORY_FILE = 'history.json'
 DATASTRUCT_FILE = 'data.json'
-TURNING_POINT = 100  # nth iteration to begin advanced algo
+TURNING_POINT = 60  # nth iteration to begin advanced algo
 
 
 def jsonDump(file, dictData):  # obj to json file
@@ -87,11 +87,11 @@ def main():
 
         # silent until opponent confesses, retaliate then forgive after 2 confess
         elif dictHistory['personality'] == 2:  # personality sneaky
-            if not dictData['queue'].empty():  # empty queue of confessions
+            if bool(dictData['queue']):  # empty queue of confessions
                 print(dictData['queue'].pop(0))  # sins are forgiven
             elif moveOpPrevious == 'confess':  # retaliate for their transgression
                 print('confess')  # one as penence
-                dictData['queue'].push('confess')  # another as penence
+                dictData['queue'].append('confess')  # another as penence
             else:  # absolution
                 print('silent')
 
@@ -112,9 +112,6 @@ def main():
                 print('confess')
     jsonDump(HISTORY_FILE, dictHistory)
     jsonDump(DATASTRUCT_FILE, dictData)
-    if dictData['currIteration'] == 100:
-        jsonDump('debug'+ HISTORY_FILE, dictHistory)
-    jsonDump('debug'+ DATASTRUCT_FILE, dictData)
 '''
     else:  # judgement day has come
         numsilent = dictHistory['history'].count('silent')
