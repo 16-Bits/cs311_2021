@@ -34,7 +34,7 @@ if __name__ == "__main__":
                                         stdout=subprocess.PIPE, shell=True, cwd=p['dir_name'])
                 (out, err) = proc.communicate()
 
-            last_move = players[0]['last_move'] if i == 0 else players[1]['last_move']
+            last_move = players[0]['last_move'] if i == 1 else players[1]['last_move']
             proc = subprocess.Popen([f"{p['runme']} --last_opponent_move {last_move}"],
                                     stdout=subprocess.PIPE, shell=True, cwd=p['dir_name'])
             (out, err) = proc.communicate()

@@ -22,13 +22,25 @@ def jsonLoad(file):  # json file to obj
     with open(file, 'r') as readFile:
         return json.load(readFile)
 
-""" I am stupid
+
+"""
 # either im stupid or this is no function to return and remove first obj in a list in a dict
 def dictQueuePop(dictData):
     qPop = dictData['queue'][0]
     del dictData['queue'][0]
     return qPop
-"""
+"""  # I am stupid
+
+
+def compareHist(histMe, histOp):
+    score = 0
+    for i in len(histOp):
+        if histMe[i] == 'confess' and histOp[i] == 'silent':
+            score += 1  # ftw
+        elif histMe[i] == 'silent' and histOp[i] == 'confess':
+            score -= 1  # epic fail
+    return score
+
 
 def main():
 
@@ -78,7 +90,7 @@ def main():
         if dictHistory['personality'] == 3:  # personality nice
             if moveOpPrevious != 'confess':  # the opponent be a trustin' one
                 rng = random.randrange(4)  # furl the die
-                if rng != 1:  # bad luck t' me opponent
+                if rng != 0:  # bad luck t' me opponent
                     print('confess')  # we do a wee trollin'
                 else:  # luck be on thar side
                     print('silent')  # good fer 'em
@@ -110,31 +122,73 @@ def main():
             else:  # the opponent hast wrong'd me
                 # i shalt nev'r f'rgive this slight 'gainst me
                 print('confess')
-    jsonDump(HISTORY_FILE, dictHistory)
-    jsonDump(DATASTRUCT_FILE, dictData)
-'''
-    else:  # judgement day has come
-        numsilent = dictHistory['history'].count('silent')
+
+    # judgement day has come
+    elif dictHistory['personality'] > -1 and dictData['currIteration'] > TURNING_POINT:
+        numSilent = dictHistory['history'].count('silent')
         numConfess = dictHistory['history'].count('confess')
-        trustFactor = numsilent/dictData['currIteration']
+        trustFactor = numSilent/dictData['currIteration']
         distrustFactor = numConfess/dictData['currIteration']
 
-        if distrustFactor >= 80:  # opponent cannot be trusted
+        if distrustFactor >= .80:  # opponent cannot be trusted
             print('confess')  # i will not play their game
-        else:
+
+        else:  # advanced value based algos
             #history repeats itself/poor man's machine learning
             predictiveHist = dictHistory['history'].append(
-                dictHistory['history'][3:])
-            if predictiveHist.len() > numIterations:  # trim it to iteration length
-                del predictiveHist[:-(dictData['currIteration']*2-100)]
-    #dupe last 40 opmoves, run tests to see which will get me least time
-    #if copy me do opposite of thier last move?
-    #high silent, silent until they betray or go on betray streak for rand# < 5
-    #if pattern detected (every 10 moves bias is similar), copy last move
-    #for the next x turns, do not silent, afterwards, forgive silent for 2 to see if they are back to normal
-'''
+                dictHistory['history'][3:])  # basically duplicate the history
+            if len(predictiveHist) > numIterations:  # trim it to iteration length
+                del predictiveHist[:-
+                                   (dictData['currIteration']*2-numIterations)]
+
+            # to determine winner of value based algo
+            dictValue = {1: 0, 2: 0, 3: 0, 4: 0}
+            #its late and i am going crazy so i will comment less, good luck
+            #initialize move histories based on probability
+            probHist1 = []
+            probHist2 = []
+            probHist3 = []
+            probHist4 = []
+            for i in range(100):
+                if random.range(numSilent) == 0:  # 1/numSilent chance its silent
+                    probHist1.append("silent")
+                else:
+                    probHist1.append("confess")
+
+                if random.range(numSilent) != 0:  # 1/numSilent chance its confess
+                    probHist2.append("silent")
+                else:
+                    probHist2.append("confess")
+
+                if random.range(numConfess) == 0:  # 1/numConfess chance its silent
+                    probHist3.append("silent")
+                else:
+                    probHist3.append("confess")
+
+                if random.range(numConfess) != 0:  # 1/numConfess chance its confess
+                    probHist4.append("silent")
+                else:
+                    probHist4.append("confess")
+
+            #compare and see which one comes on top
+            dictValue[1] = compareHist(probHist1, predictiveHist)
+            dictValue[2] = compareHist(probHist2, predictiveHist)
+            dictValue[3] = compareHist(probHist3, predictiveHist)
+            dictValue[4] = compareHist(probHist4, predictiveHist)
+            winner = max(dictValue, key=dictValue.get)  # get winner
+            #use winner's prediction
+            if winner == 1:
+                print(probHist1[dictData['currIteration']])
+            elif winner == 2:
+                print(probHist2[dictData['currIteration']])
+            elif winner == 3:
+                print(probHist3[dictData['currIteration']])
+            elif winner == 4:
+                print(probHist4[dictData['currIteration']])
+
+    jsonDump(HISTORY_FILE, dictHistory)
+    jsonDump(DATASTRUCT_FILE, dictData)
 
 
 if __name__ == '__main__':
     main()
-    
