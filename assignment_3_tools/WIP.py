@@ -66,8 +66,7 @@ def main():
 
     #First 3 moves shall be to remain silent, see what oponent does and assign personality accordingly
     # opponent algo personality is unknown
-    testeroni = bool(dictData['queue'])
-    if dictHistory['personality'] == -1 and dictData['queue'] != 0:
+    if dictHistory['personality'] == -1 and bool(dictData['queue']):
         print(dictData['queue'].pop(0))  # FIFO
     elif dictHistory['personality'] == -1:  # First 3 moves are dealt, time to judge
         # Based on number of silent in opponent's first 3 moves: 3:nice 2:sneaky 1:tricky 0:belligerent
@@ -131,7 +130,8 @@ def main():
     #high silent, silent until they betray or go on betray streak for rand# < 5
     #if pattern detected (every 10 moves bias is similar), copy last move
     #for the next x turns, do not silent, afterwards, forgive silent for 2 to see if they are back to normal
-
+    jsonDump(HISTORY_FILE, dictHistory)
+    jsonDump(DATASTRUCT_FILE, dictData)
 
 if __name__ == '__main__':
     main()
