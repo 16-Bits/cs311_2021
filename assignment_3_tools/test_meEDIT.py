@@ -12,12 +12,12 @@ if __name__ == "__main__":
     players = []
 
     with open(args.player_a_runme_file, "r") as f:
-        players.append( {"dir_name" : os.path.dirname(args.player_a_runme_file),
-            "runme" : f.read().strip() , "player name" : "A",  "game_years" : 0 } )
+        players.append({"dir_name": os.path.dirname(args.player_a_runme_file),
+                        "runme": f.read().strip(), "player name": "A",  "game_years": 0})
 
     with open(args.player_b_runme_file, "r") as f:
-        players.append( {"dir_name" : os.path.dirname(args.player_b_runme_file),
-            "runme" : f.read().strip() , "player name" : "B", "game_years" : 0} )
+        players.append({"dir_name": os.path.dirname(args.player_b_runme_file),
+                        "runme": f.read().strip(), "player name": "B", "game_years": 0})
 
     iterations = 100
     for i in range(2):
@@ -26,23 +26,22 @@ if __name__ == "__main__":
         p['last_move'] = "zero"
         p['current_move'] = "zero"
 
-    for i  in range(iterations):
+    for i in range(iterations):
         for i in range(2):
-            p = players[i] 
+            p = players[i]
             if i == 0:
-                proc = subprocess.Popen([f"{p['runme']} --init true --iterations {iterations}"], 
-                        stdout=subprocess.PIPE, shell=True , cwd= p['dir_name'])
+                proc = subprocess.Popen([f"{p['runme']} --init true --iterations {iterations}"],
+                                        stdout=subprocess.PIPE, shell=True, cwd=p['dir_name'])
                 (out, err) = proc.communicate()
-           
-            last_move = players[0]['last_move'] if i == 1 else players[1]['last_move']
+
+            last_move = players[0]['last_move'] if i == 0 else players[1]['last_move']
             proc = subprocess.Popen([f"{p['runme']} --last_opponent_move {last_move}"],
-                    stdout=subprocess.PIPE, shell=True , cwd= p['dir_name'])
+                                    stdout=subprocess.PIPE, shell=True, cwd=p['dir_name'])
             (out, err) = proc.communicate()
-            print(p['player name'])
+            print(p['player name'] + " " + f"{p['runme']} --last_opponent_move {last_move}")
             print(out)
             #input("Please press the Enter key to proceed")
             p['current_move'] = out.strip().lower().decode("utf-8")
-
 
         #score it!
         if players[0]['current_move'] == "confess" and players[1]['current_move'] == "confess":
@@ -60,17 +59,14 @@ if __name__ == "__main__":
         else:
             print(players)
             print("!!!!!!!!!!!!!!!!!!!!Error!!!!!!!!!!!!!!")
-        players[0]['last_move'] = players[1]['current_move'] 
+        players[0]['last_move'] = players[1]['current_move']
         players[1]['last_move'] = players[0]['current_move']
 
     if players[0]['game_years'] > players[1]['game_years']:
-        print(f"Player {players[1]['player name']} wins {players[1]['game_years']} < {players[0]['game_years']}")
+        print(
+            f"Player {players[1]['player name']} wins {players[1]['game_years']} < {players[0]['game_years']}")
     elif players[1]['game_years'] > players[0]['game_years']:
-        print(f"Player {players[0]['player name']} wins {players[0]['game_years']} < {players[1]['game_years']}")
+        print(
+            f"Player {players[0]['player name']} wins {players[0]['game_years']} < {players[1]['game_years']}")
     else:
         print(f"Tie {players[0]['game_years']} = {players[1]['game_years']}")
-
-
-
-
-
